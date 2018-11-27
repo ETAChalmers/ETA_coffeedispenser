@@ -1,0 +1,10 @@
+stm32f3xx_hal_opamp.c:430:13:HAL_OPAMP_MspInit	0	static
+stm32f3xx_hal_opamp.c:249:19:HAL_OPAMP_Init	48	static
+stm32f3xx_hal_opamp.c:447:13:HAL_OPAMP_MspDeInit	0	static
+stm32f3xx_hal_opamp.c:380:19:HAL_OPAMP_DeInit	16	static
+stm32f3xx_hal_opamp.c:484:19:HAL_OPAMP_Start	0	static
+stm32f3xx_hal_opamp.c:524:19:HAL_OPAMP_Stop	0	static
+stm32f3xx_hal_opamp.c:566:19:HAL_OPAMP_SelfCalibrate	24	static
+stm32f3xx_hal_opamp.c:764:19:HAL_OPAMP_Lock	0	static
+stm32f3xx_hal_opamp.c:819:24:HAL_OPAMP_GetState	0	static
+stm32f3xx_hal_opamp.c:841:28:HAL_OPAMP_GetTrimOffset	12	static
