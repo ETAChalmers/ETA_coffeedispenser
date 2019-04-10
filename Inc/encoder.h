@@ -2,7 +2,7 @@
  * encoder.h
  *
  *  Created on: 6 apr. 2018
- *      Author: eta
+ *      Author: sjaxel
  */
 
 #ifndef ENCODER_H_

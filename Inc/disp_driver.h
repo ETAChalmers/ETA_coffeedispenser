@@ -21,7 +21,9 @@
 #define SPEED_TAU 0.1
 #define MA_ALFA (1 / (SPEED_TAU * PID_INNER_RATE))
 #define STABLE_CYCLES 10
+#define MAX_MISSED_CYCLES 100
 
+#define MAX_UNITS 14
 /* Exported types ------------------------------------------------------------*/
 
 typedef enum {
@@ -56,6 +58,8 @@ typedef struct
 	arm_pid_instance_f32			pid_outer;
 	arm_pid_instance_f32			pid_inner;
 	HAL_DRIVER_System_state			system;
+	uint32_t						drv_enable_pin;
+	GPIO_TypeDef					*drv_enable_port;
 	HAL_LockTypeDef          		Lock;          /*!< Locking object                    */
   __IO HAL_DRIVER_StateTypeDef    	State;         /*!< MIMBOX operation state               */
 }DRIVER_HandleTypeDef;

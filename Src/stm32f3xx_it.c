@@ -1,10 +1,11 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    stm32f3xx_it.c
   * @brief   Interrupt Service Routines.
   ******************************************************************************
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * COPYRIGHT(c) 2019 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -30,14 +31,45 @@
   *
   ******************************************************************************
   */
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f3xx_hal.h"
-#include "stm32f3xx.h"
-#include "stm32f3xx_it.h"
+/* USER CODE END Header */
 
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "stm32f3xx_it.h"
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN TD */
+
+/* USER CODE END TD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+ 
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN PV */
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
 #include "disp_driver.h"
+#include "panel_io.h"
 #ifdef SERIAL_IO
 #include "serial_io.h"
 extern SIO_HandleTypeDef hsio1;
@@ -45,6 +77,7 @@ extern SIO_HandleTypeDef hsio1;
 
 extern ENC_HandleTypeDef hencoder1;
 extern DRIVER_HandleTypeDef hdriver1;
+extern PANEL_HandleTypeDef hpanel1;
 
 
 /* USER CODE END 0 */
@@ -55,21 +88,22 @@ extern TIM_HandleTypeDef htim7;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern UART_HandleTypeDef huart2;
+/* USER CODE BEGIN EV */
+
+/* USER CODE END EV */
 
 /******************************************************************************/
-/*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
+/*           Cortex-M4 Processor Interruption and Exception Handlers          */ 
 /******************************************************************************/
-
 /**
-* @brief This function handles System tick timer.
-*/
+  * @brief This function handles System tick timer.
+  */
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
-  HAL_SYSTICK_IRQHandler();
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -83,8 +117,8 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-* @brief This function handles EXTI line 1 interrupt.
-*/
+  * @brief This function handles EXTI line 1 interrupt.
+  */
 void EXTI1_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI1_IRQn 0 */
@@ -97,8 +131,22 @@ void EXTI1_IRQHandler(void)
 }
 
 /**
-* @brief This function handles EXTI line 4 interrupt.
-*/
+  * @brief This function handles EXTI line 3 interrupt.
+  */
+void EXTI3_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI3_IRQn 0 */
+
+  /* USER CODE END EXTI3_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_3);
+  /* USER CODE BEGIN EXTI3_IRQn 1 */
+
+  /* USER CODE END EXTI3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line 4 interrupt.
+  */
 void EXTI4_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_IRQn 0 */
@@ -111,8 +159,8 @@ void EXTI4_IRQHandler(void)
 }
 
 /**
-* @brief This function handles DMA1 channel6 global interrupt.
-*/
+  * @brief This function handles DMA1 channel6 global interrupt.
+  */
 void DMA1_Channel6_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel6_IRQn 0 */
@@ -125,8 +173,8 @@ void DMA1_Channel6_IRQHandler(void)
 }
 
 /**
-* @brief This function handles DMA1 channel7 global interrupt.
-*/
+  * @brief This function handles DMA1 channel7 global interrupt.
+  */
 void DMA1_Channel7_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
@@ -139,22 +187,8 @@ void DMA1_Channel7_IRQHandler(void)
 }
 
 /**
-* @brief This function handles EXTI line[9:5] interrupts.
-*/
-void EXTI9_5_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-
-  /* USER CODE END EXTI9_5_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8);
-  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
-
-  /* USER CODE END EXTI9_5_IRQn 1 */
-}
-
-/**
-* @brief This function handles TIM2 global interrupt.
-*/
+  * @brief This function handles TIM2 global interrupt.
+  */
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
@@ -167,8 +201,8 @@ void TIM2_IRQHandler(void)
 }
 
 /**
-* @brief This function handles USART2 global interrupt / USART2 wake-up interrupt through EXT line 26.
-*/
+  * @brief This function handles USART2 global interrupt / USART2 wake-up interrupt through EXT line 26.
+  */
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
@@ -181,8 +215,8 @@ void USART2_IRQHandler(void)
 }
 
 /**
-* @brief This function handles TIM7 global and DAC2 underrun error interrupts.
-*/
+  * @brief This function handles TIM7 global and DAC2 underrun error interrupts.
+  */
 void TIM7_DAC2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_DAC2_IRQn 0 */
@@ -234,9 +268,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	  }
   }
   if(GPIO_Pin == BREW_BTN_Pin){
-	  if(hdriver1.State == HAL_DRIVER_STATE_READY){
-		  HAL_DRIVER_Dispense(&hdriver1, 8);
-	  }
+	  	  HAL_PANEL_BrewBTN_CB(&hpanel1);
+
   }
 
   if(GPIO_Pin == ENC_I_Pin){

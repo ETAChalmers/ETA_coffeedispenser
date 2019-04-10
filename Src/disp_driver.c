@@ -52,7 +52,7 @@ static float32_t HAL_DRIVER_Filter_speed(DRIVER_HandleTypeDef *hdriver, float32_
 static float32_t HAL_DRIVER_Saturate(float32_t value, float32_t gain, float32_t lower, float32_t upper);
 
 HAL_StatusTypeDef HAL_DRIVER_Init(DRIVER_HandleTypeDef *hdriver){
-	  HAL_GPIO_WritePin(DRV_ENABLE_GPIO_Port, DRV_ENABLE_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(hdriver->drv_enable_port, hdriver->drv_enable_pin, GPIO_PIN_RESET);
 
 	  /* Enable the Capture compare channel */
 	  TIM_CCxChannelCmd(hdriver->htim_pwm->Instance, hdriver->pwm_ch, TIM_CCx_ENABLE);
@@ -64,15 +64,20 @@ HAL_StatusTypeDef HAL_DRIVER_Init(DRIVER_HandleTypeDef *hdriver){
 HAL_StatusTypeDef HAL_DRIVER_Dispense(DRIVER_HandleTypeDef *hdriver, uint32_t units){
 	if(hdriver->State != HAL_DRIVER_STATE_READY){
 		return HAL_ERROR;
+	} else if (!units || units > MAX_UNITS){
+		return HAL_ERROR;
 	}
-
 	HAL_DRIVER_Start_PID(hdriver, units * ENCODER_STEP);
+	return HAL_OK;
 }
 
 
 HAL_StatusTypeDef HAL_DRIVER_Update_PID(DRIVER_HandleTypeDef *hdriver){
 	if(hdriver->State == HAL_DRIVER_STATE_BUSY){
-		hdriver->system.missed_cycles++;
+		if(hdriver->system.missed_cycles++ > MAX_MISSED_CYCLES){
+			HAL_DRIVER_Stop_PID(hdriver);
+			return HAL_ERROR;
+		}
 		return HAL_BUSY;
 	} else if (hdriver->State != HAL_DRIVER_STATE_RUNNING){
 		return HAL_ERROR;
@@ -174,7 +179,7 @@ HAL_StatusTypeDef HAL_DRIVER_Stop_PID(DRIVER_HandleTypeDef *hdriver){
 
 
 static HAL_StatusTypeDef HAL_DRIVER_Start(DRIVER_HandleTypeDef *hdriver){
-	  HAL_GPIO_WritePin(DRV_ENABLE_GPIO_Port, DRV_ENABLE_Pin, GPIO_PIN_SET);
+	  HAL_GPIO_WritePin(hdriver->drv_enable_port, hdriver->drv_enable_pin, GPIO_PIN_SET);
 	  HAL_ENC_Clear_CNT(hdriver->encoder);
 
 	  if(IS_TIM_BREAK_INSTANCE(hdriver->htim_pwm->Instance) != RESET)
@@ -192,7 +197,7 @@ static HAL_StatusTypeDef HAL_DRIVER_Start(DRIVER_HandleTypeDef *hdriver){
 
 static HAL_StatusTypeDef HAL_DRIVER_Stop(DRIVER_HandleTypeDef *hdriver){
 	  //Deactive the H-bridge.
-	  HAL_GPIO_WritePin(DRV_ENABLE_GPIO_Port, DRV_ENABLE_Pin, GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(hdriver->drv_enable_port, hdriver->drv_enable_pin, GPIO_PIN_RESET);
 	  //Deactive the PWM timer.
 	  __HAL_TIM_DISABLE(hdriver->htim_pwm);
 	  return HAL_OK;;

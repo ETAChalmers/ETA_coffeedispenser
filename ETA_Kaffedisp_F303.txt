@@ -4,26 +4,6 @@ Date	10/31/2018
 MCU	STM32F303K8Tx
 
 
-
-PERIPHERALS	MODES	FUNCTIONS	PINS
-ADC2	OPAMP2 Output Single-Ended	ADC2_OPAMP_OUT2	VP_ADC2_OPAMP_OUT2
-CAN	Master	CAN_RX	PA11
-CAN	Master	CAN_TX	PA12
-OPAMP2	Follower	OPAMP2_VINP	PA7
-OPAMP2	Follower	OPAMP2_VOUT	PA6
-SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
-SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
-SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
-TIM1	Internal Clock	TIM1_VS_ClockSourceINT	VP_TIM1_VS_ClockSourceINT
-TIM1	PWM Generation CH3 CH3N	TIM1_CH3	PA10
-TIM1	PWM Generation CH3 CH3N	TIM1_CH3N	PF0 / OSC_IN
-TIM2	Encoder Mode	TIM2_CH1	PA0
-TIM2	Encoder Mode	TIM2_CH2	PA1
-USART2	Asynchronous	USART2_RX	PA15
-USART2	Asynchronous	USART2_TX	PA2
-
-
-
 Pin Nb	PINs	FUNCTIONs	LABELs
 2	PF0 / OSC_IN	TIM1_CH3N	DRV_PWM_CH3N
 6	PA0	TIM2_CH1	
@@ -45,29 +25,6 @@ Pin Nb	PINs	FUNCTIONs	LABELs
 28	PB5	GPIO_Output	ACT_VALVE
 29	PB6	GPIO_Input	CUPBUS_3
 30	PB7	GPIO_Input	CUPBUS_2
-
-
-
-SOFTWARE PROJECT
-
-Project Settings : 
-Project Name : ETA_Kaffedisp_F303
-Project Folder : C:\Users\eta\Atollic\TrueSTUDIO\STM32_workspace_9.0\ETA_Kaffedisp_F303
-Toolchain / IDE : TrueSTUDIO
-Firmware Package Name and Version : STM32Cube FW_F3 V1.9.1
-
-
-Code Generation Settings : 
-STM32Cube Firmware Library Package : Copy only the necessary library files
-Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
-Backup previously generated files when re-generating : No
-Delete previously generated files when not re-generated : Yes
-Set all free pins as analog (to optimize the power consumption) : No
-
-
-Toolchains Settings : 
-Compiler Optimizations : Balanced Size/Speed
-
 
 
 
