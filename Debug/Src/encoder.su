@@ -1,4 +1,0 @@
-encoder.c:11:19:HAL_ENC_Init	8	static
-encoder.c:22:18:HAL_ENC_GetPosition	0	static
-encoder.c:35:19:HAL_ENC_Clear_CNT	0	static
-encoder.c:43:19:HAL_ENC_Index_Callback	8	static

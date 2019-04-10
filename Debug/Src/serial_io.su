@@ -1,2 +1,0 @@
-serial_io.c:12:19:HAL_SIO_Init	8	static
-serial_io.c:17:6:HAL_SIO_RX_Callback	8	static
