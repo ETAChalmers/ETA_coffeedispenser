@@ -83,6 +83,7 @@ OPAMP_HandleTypeDef hopamp2;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim7;
+TIM_HandleTypeDef htim17;
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_tx;
@@ -112,6 +113,7 @@ static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_IWDG_Init(void);
+static void MX_TIM17_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 static void MX_ENCODER_Init(void);
@@ -164,6 +166,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM7_Init();
   MX_IWDG_Init();
+  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
   MX_DRIVER_Init();
   MX_ENCODER_Init();
@@ -181,9 +184,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	  if(!HAL_GPIO_ReadPin(DRV_ENABLE_GPIO_Port, DRV_ENABLE_Pin)){
 		  HAL_IWDG_Refresh(&hiwdg);
 	  }
+
 
     /* USER CODE END WHILE */
 
@@ -310,7 +315,7 @@ static void MX_IWDG_Init(void)
 
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_64;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_128;
   hiwdg.Init.Window = 4095;
   hiwdg.Init.Reload = 4095;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
@@ -521,6 +526,72 @@ static void MX_TIM7_Init(void)
 }
 
 /**
+  * @brief TIM17 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM17_Init(void)
+{
+
+  /* USER CODE BEGIN TIM17_Init 0 */
+
+  /* USER CODE END TIM17_Init 0 */
+
+  TIM_OC_InitTypeDef sConfigOC = {0};
+  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
+
+  /* USER CODE BEGIN TIM17_Init 1 */
+
+  /* USER CODE END TIM17_Init 1 */
+  htim17.Instance = TIM17;
+  htim17.Init.Prescaler = 42000;
+  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim17.Init.Period = 5000;
+  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;
+  htim17.Init.RepetitionCounter = 0;
+  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_OC_Init(&htim17) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_OnePulse_Init(&htim17, TIM_OPMODE_SINGLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_TIMING;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
+  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+  if (HAL_TIM_OC_ConfigChannel(&htim17, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
+  sBreakDeadTimeConfig.DeadTime = 0;
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+  sBreakDeadTimeConfig.BreakFilter = 0;
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+  if (HAL_TIMEx_ConfigBreakDeadTime(&htim17, &sBreakDeadTimeConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM17_Init 2 */
+
+  /* USER CODE END TIM17_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -626,12 +697,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ENC_I_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ACT_ARM_Pin ACT_VALVE_Pin */
-  GPIO_InitStruct.Pin = ACT_ARM_Pin|ACT_VALVE_Pin;
+  /*Configure GPIO pin : ACT_ARM_Pin */
+  GPIO_InitStruct.Pin = ACT_ARM_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(ACT_ARM_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : ACT_VALVE_Pin */
+  GPIO_InitStruct.Pin = ACT_VALVE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ACT_VALVE_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
@@ -661,12 +739,15 @@ static void MX_DRIVER_Init(void){
 	hdriver1.htim_pwm = &htim1;
 	hdriver1.pwm_ch = TIM_CHANNEL_3;
 	hdriver1.htim_pid = &htim7;
+	hdriver1.htim_valve = &htim17;
 	hdriver1.encoder = &hencoder1;
 	hdriver1.pid_inner.Kp = 0.1;
 	hdriver1.pid_inner.Ki = 0.001;
 	hdriver1.pid_outer.Kp = 0.08;
 	hdriver1.drv_enable_port = DRV_ENABLE_GPIO_Port;
 	hdriver1.drv_enable_pin = DRV_ENABLE_Pin;
+	hdriver1.act_valve_port = ACT_VALVE_GPIO_Port;
+	hdriver1.act_valve_pin = ACT_VALVE_Pin;
 	//hdriver1.pid.Ki = 1;
 
 	if(HAL_DRIVER_Init(&hdriver1) != HAL_OK) {

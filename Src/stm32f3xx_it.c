@@ -83,8 +83,10 @@ extern PANEL_HandleTypeDef hpanel1;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim7;
+extern TIM_HandleTypeDef htim17;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern UART_HandleTypeDef huart2;
@@ -187,6 +189,21 @@ void DMA1_Channel7_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM1 trigger and commutation and TIM17 interrupts.
+  */
+void TIM1_TRG_COM_TIM17_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_TRG_COM_TIM17_IRQn 0 */
+
+  /* USER CODE END TIM1_TRG_COM_TIM17_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim1);
+  HAL_TIM_IRQHandler(&htim17);
+  /* USER CODE BEGIN TIM1_TRG_COM_TIM17_IRQn 1 */
+
+  /* USER CODE END TIM1_TRG_COM_TIM17_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM2 global interrupt.
   */
 void TIM2_IRQHandler(void)
@@ -235,6 +252,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* Prevent unused argument(s) compilation warning */
 	if(htim == &htim7){
 		HAL_DRIVER_Update_PID(&hdriver1);
+	}
+
+	if(htim == &htim17){
+		HAL_GPIO_WritePin(hdriver1.act_valve_port, hdriver1.act_valve_pin, GPIO_PIN_RESET);
 	}
 
 }

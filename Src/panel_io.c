@@ -13,15 +13,46 @@ static uint32_t HAL_PANEL_Read_cupbus(PANEL_HandleTypeDef *hpanel);
 
 HAL_StatusTypeDef HAL_PANEL_Init(PANEL_HandleTypeDef *hpanel) {
 	HAL_GPIO_WritePin(hpanel->brew_btn.port, hpanel->brew_btn.pin, GPIO_PIN_SET);
+	hpanel->State = HAL_PANEL_STATE_READY;
 	return HAL_OK;
 }
 
 void HAL_PANEL_BrewBTN_CB(PANEL_HandleTypeDef *hpanel) {
-	//Read the CUPBUS from the panel and multiply with a scaler
-	uint32_t cups = COMPARTMENTS_PER_CUP * HAL_PANEL_Read_cupbus(hpanel);
+	if(hpanel->State != HAL_PANEL_STATE_READY){
+		return;
+	}
+	hpanel->State = HAL_PANEL_STATE_BUSY;
 
-	//Dispense the cups
-	HAL_DRIVER_Dispense(hpanel->hdriver, cups);
+	uint32_t stable = 0;
+	uint32_t cycle = 0;
+
+	while(1){
+		if(stable > 0xffff){
+			break;
+		} else if(!HAL_GPIO_ReadPin(hpanel->brew_btn.port, hpanel->brew_btn.pin)) {
+			stable++;
+		} else if(cycle > 0xffffff) {
+			hpanel->State = HAL_PANEL_STATE_READY;
+			return;
+		} else {
+			cycle++;
+		}
+	}
+
+	if(hpanel->hdriver->State == HAL_DRIVER_STATE_READY){
+		//Read the CUPBUS from the panel and multiply with a scaler
+		uint32_t cups = COMPARTMENTS_PER_CUP * HAL_PANEL_Read_cupbus(hpanel);
+		//Dispense the cups
+		HAL_DRIVER_Dispense(hpanel->hdriver, cups);
+		hpanel->State = HAL_PANEL_STATE_READY;
+		return;
+	} else if(hpanel->hdriver->State == HAL_DRIVER_STATE_BUSY){
+
+	}
+
+
+	hpanel->State = HAL_PANEL_STATE_READY;
+	return;
 
 }
 

@@ -24,6 +24,8 @@
 #define MAX_MISSED_CYCLES 100
 
 #define MAX_UNITS 14
+#define MAX_WATER_UNITS 10
+#define VALVE_TIME_PER_UNIT 2500
 /* Exported types ------------------------------------------------------------*/
 
 typedef enum {
@@ -53,6 +55,7 @@ typedef struct
 {
 	TIM_HandleTypeDef				*htim_pwm;	   /*!< PWM timer handle                   */
 	TIM_HandleTypeDef				*htim_pid;	   /*!< PID rate timer handle                   */
+	TIM_HandleTypeDef				*htim_valve;
 	uint32_t						pwm_ch;
 	ENC_HandleTypeDef				*encoder;
 	arm_pid_instance_f32			pid_outer;
@@ -60,6 +63,8 @@ typedef struct
 	HAL_DRIVER_System_state			system;
 	uint32_t						drv_enable_pin;
 	GPIO_TypeDef					*drv_enable_port;
+	uint32_t						act_valve_pin;
+	GPIO_TypeDef					*act_valve_port;
 	HAL_LockTypeDef          		Lock;          /*!< Locking object                    */
   __IO HAL_DRIVER_StateTypeDef    	State;         /*!< MIMBOX operation state               */
 }DRIVER_HandleTypeDef;

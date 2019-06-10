@@ -35,7 +35,7 @@
 								<option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
 								<option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
 								<option id="com.atollic.truestudio.as.symbols.defined.512443508" name="Defined symbols" superClass="com.atollic.truestudio.as.symbols.defined" useByScannerDiscovery="false" />
-								<option id="com.atollic.truestudio.exe.debug.toolchain.as.debug.flags.1399586125" superClass="com.atollic.truestudio.exe.debug.toolchain.as.debug.flags" useByScannerDiscovery="false" value="com.atollic.truestudio.as.debug.flags.3" valueType="enumerated" />
+								<option id="com.atollic.truestudio.exe.debug.toolchain.as.debug.flags.1399586125" name="Debug Level" superClass="com.atollic.truestudio.exe.debug.toolchain.as.debug.flags" useByScannerDiscovery="false" value="com.atollic.truestudio.as.debug.flags.3" valueType="enumerated" />
 								<inputType id="com.atollic.truestudio.as.input.374932590" name="Input" superClass="com.atollic.truestudio.as.input" />
 							</tool>
 							<tool command="arm-atollic-eabi-gcc -c " commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX} ${OUTPUT} ${INPUTS}" id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc">
@@ -49,6 +49,7 @@
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=__attribute__((weak))" />
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))" />
+									<listOptionValue builtIn="false" value="DEBUG" />
 									<listOptionValue builtIn="false" value="USE_HAL_DRIVER" />
 									<listOptionValue builtIn="false" value="ARM_MATH_CM4" />
 									<listOptionValue builtIn="false" value="STM32F303x8" />
@@ -63,7 +64,7 @@
 								<option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
 								<option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
 								<option id="com.atollic.truestudio.common_options.target.interwork.1173495076" name="Mix ARM/Thumb" superClass="com.atollic.truestudio.common_options.target.interwork" useByScannerDiscovery="false" />
-								<option id="com.atollic.truestudio.exe.debug.toolchain.gcc.debug.info.1256289345" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.debug.info" useByScannerDiscovery="false" value="com.atollic.truestudio.gcc.debug.info.3" valueType="enumerated" />
+								<option id="com.atollic.truestudio.exe.debug.toolchain.gcc.debug.info.1256289345" name="Debug Level" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.debug.info" useByScannerDiscovery="false" value="com.atollic.truestudio.gcc.debug.info.3" valueType="enumerated" />
 								<inputType id="com.atollic.truestudio.gcc.input.850396938" superClass="com.atollic.truestudio.gcc.input" />
 							</tool>
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.ld.1444973427" name="C Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ld">
