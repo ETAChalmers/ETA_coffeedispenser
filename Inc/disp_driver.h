@@ -23,9 +23,9 @@
 #define STABLE_CYCLES 10
 #define MAX_MISSED_CYCLES 100
 
-#define MAX_UNITS 14
-#define MAX_WATER_UNITS 10
-#define VALVE_TIME_PER_UNIT 2500
+#define MAX_COFFEE_UNITS 14					//Compartments
+#define MAX_WATER_UNITS 125					//cl of water
+#define VALVE_TIME_PER_UNIT 100				//millisekunder per cl
 /* Exported types ------------------------------------------------------------*/
 
 typedef enum {
@@ -75,7 +75,9 @@ HAL_StatusTypeDef HAL_DRIVER_Init(DRIVER_HandleTypeDef *hdriver);
 
 HAL_StatusTypeDef HAL_DRIVER_DeInit(DRIVER_HandleTypeDef *hdriver);
 
-HAL_StatusTypeDef HAL_DRIVER_Dispense(DRIVER_HandleTypeDef *hdriver, uint32_t units);
+HAL_StatusTypeDef HAL_DRIVER_Dispense_coffee(DRIVER_HandleTypeDef *hdriver, uint32_t units);
+
+HAL_StatusTypeDef HAL_DRIVER_Dispense_water(DRIVER_HandleTypeDef *hdriver, uint32_t units);
 
 HAL_StatusTypeDef HAL_DRIVER_Start_PID(DRIVER_HandleTypeDef *hdriver, int16_t setpoint);
 

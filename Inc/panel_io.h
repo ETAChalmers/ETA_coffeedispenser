@@ -11,7 +11,8 @@
 #include "stm32f3xx_hal.h"
 #include "disp_driver.h"
 
-#define COMPARTMENTS_PER_CUP 2
+#define COMPARTMENTS_COFFE_PER_CUP 3
+#define CL_WATER_PER_CUP 25
 
 typedef enum
 {

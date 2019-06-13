@@ -23,31 +23,17 @@ void HAL_PANEL_BrewBTN_CB(PANEL_HandleTypeDef *hpanel) {
 	}
 	hpanel->State = HAL_PANEL_STATE_BUSY;
 
-	uint32_t stable = 0;
-	uint32_t cycle = 0;
-
-	while(1){
-		if(stable > 0xffff){
-			break;
-		} else if(!HAL_GPIO_ReadPin(hpanel->brew_btn.port, hpanel->brew_btn.pin)) {
-			stable++;
-		} else if(cycle > 0xffffff) {
-			hpanel->State = HAL_PANEL_STATE_READY;
-			return;
-		} else {
-			cycle++;
-		}
-	}
-
 	if(hpanel->hdriver->State == HAL_DRIVER_STATE_READY){
 		//Read the CUPBUS from the panel and multiply with a scaler
-		uint32_t cups = COMPARTMENTS_PER_CUP * HAL_PANEL_Read_cupbus(hpanel);
+		uint32_t cups = HAL_PANEL_Read_cupbus(hpanel);
+		uint32_t compartments = COMPARTMENTS_COFFE_PER_CUP * cups;		//Compartment ~11g coffee
+		uint32_t water = CL_WATER_PER_CUP * cups;						//centilitres of water per cup
 		//Dispense the cups
-		HAL_DRIVER_Dispense(hpanel->hdriver, cups);
+		if(HAL_DRIVER_Dispense_coffee(hpanel->hdriver, compartments) == HAL_OK){
+			HAL_DRIVER_Dispense_water(hpanel->hdriver, water);
+		}
 		hpanel->State = HAL_PANEL_STATE_READY;
 		return;
-	} else if(hpanel->hdriver->State == HAL_DRIVER_STATE_BUSY){
-
 	}
 
 

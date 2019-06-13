@@ -45,8 +45,6 @@ static HAL_StatusTypeDef HAL_DRIVER_Start(DRIVER_HandleTypeDef *hdriver);
 
 static HAL_StatusTypeDef HAL_DRIVER_Stop(DRIVER_HandleTypeDef *hdriver);
 
-static HAL_StatusTypeDef HAL_DRIVER_Dispense_water(DRIVER_HandleTypeDef *hdriver, uint32_t time);
-
 static void TIM_CCxNChannelCmd(TIM_TypeDef* TIMx, uint32_t Channel, uint32_t ChannelNState);
 
 static float32_t HAL_DRIVER_Filter_speed(DRIVER_HandleTypeDef *hdriver, float32_t speed_sample);
@@ -63,25 +61,29 @@ HAL_StatusTypeDef HAL_DRIVER_Init(DRIVER_HandleTypeDef *hdriver){
 	  return HAL_OK;
 }
 
-HAL_StatusTypeDef HAL_DRIVER_Dispense(DRIVER_HandleTypeDef *hdriver, uint32_t units){
+HAL_StatusTypeDef HAL_DRIVER_Dispense_coffee(DRIVER_HandleTypeDef *hdriver, uint32_t units){
 	if(hdriver->State != HAL_DRIVER_STATE_READY){
 		return HAL_ERROR;
-	} else if (!units || units > MAX_UNITS){
+	} else if (!units || (units > MAX_COFFEE_UNITS)){
 		return HAL_ERROR;
 	}
-	HAL_DRIVER_Dispense_water(hdriver, units);
-	HAL_DRIVER_Start_PID(hdriver, units * ENCODER_STEP);
-	return HAL_OK;
+	return HAL_DRIVER_Start_PID(hdriver, units * ENCODER_STEPS_PER_COMPARTMENT);
 }
 
-static HAL_StatusTypeDef HAL_DRIVER_Dispense_water(DRIVER_HandleTypeDef *hdriver, uint32_t units){
+HAL_StatusTypeDef HAL_DRIVER_Dispense_water(DRIVER_HandleTypeDef *hdriver, uint32_t units){
 	if(units > MAX_WATER_UNITS){
 		units = MAX_WATER_UNITS;
 	}
-	if((hdriver->htim_valve->Instance->CR1 & 1)){
-		hdriver->htim_valve->Instance->ARR += units * VALVE_TIME_PER_UNIT;
+	if(hdriver->htim_valve->Instance->CR1 & 1){
+		uint16_t total_time = hdriver->htim_valve->Instance->ARR + (units * VALVE_TIME_PER_UNIT);
+		if(total_time > (VALVE_TIME_PER_UNIT * MAX_WATER_UNITS)){
+			hdriver->htim_valve->Instance->ARR = VALVE_TIME_PER_UNIT * MAX_WATER_UNITS;
+		} else {
+			hdriver->htim_valve->Instance->ARR += units * VALVE_TIME_PER_UNIT;
+		}
+		return HAL_OK;
 	} else {
-	hdriver->htim_valve->Instance->ARR = units * VALVE_TIME_PER_UNIT;
+		hdriver->htim_valve->Instance->ARR = units * VALVE_TIME_PER_UNIT;
 	}
 
 	HAL_GPIO_WritePin(hdriver->act_valve_port, hdriver->act_valve_pin, GPIO_PIN_SET);
