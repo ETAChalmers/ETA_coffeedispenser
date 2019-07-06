@@ -15,7 +15,6 @@
 /* Exported constants ------------------------------------------------------------*/
 
 
-#define MAX_COFFEE_UNITS 14					//Compartments
 #define MAX_WATER_UNITS 125					//cl of water
 #define VALVE_TIME_PER_UNIT 150				//millisekunder per cl
 /* Exported types ------------------------------------------------------------*/

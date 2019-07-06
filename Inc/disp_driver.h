@@ -23,9 +23,7 @@
 #define STABLE_CYCLES 10
 #define MAX_MISSED_CYCLES 100
 
-#define MAX_COFFEE_UNITS 14					//Compartments
-#define MAX_WATER_UNITS 125					//cl of water
-#define VALVE_TIME_PER_UNIT 100				//millisekunder per cl
+#define MAX_COFFEE_UNITS 16					//Compartments
 /* Exported types ------------------------------------------------------------*/
 
 typedef enum {
