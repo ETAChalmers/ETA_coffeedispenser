@@ -8,8 +8,9 @@
 #ifndef PANEL_IO_H_
 #define PANEL_IO_H_
 
-#include "stm32f3xx_hal.h"
 #include "disp_driver.h"
+#include "valve_driver.h"
+#include "stm32f3xx_hal.h"
 
 #define COMPARTMENTS_COFFE_PER_CUP 3
 #define CL_WATER_PER_CUP 25
@@ -33,6 +34,7 @@ typedef struct
 typedef struct
 {
 	DRIVER_HandleTypeDef		*hdriver;
+	VALVE_HandleTypeDef		    *hvalve;
 	PANEL_GPIO					cupbus1;
 	PANEL_GPIO					cupbus2;
 	PANEL_GPIO					cupbus3;

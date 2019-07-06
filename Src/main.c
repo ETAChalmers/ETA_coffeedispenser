@@ -39,16 +39,21 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
 /* Serial driver control and feedback*/
 //#define SERIAL_IO
+/*Watchdog enable */
+#define IWDG_ENABLE
 
-#include "encoder.h"
 #include "disp_driver.h"
+#include "valve_driver.h"
+#include "encoder.h"
 #include "panel_io.h"
 #ifdef SERIAL_IO
 #include "serial_io.h"
@@ -94,6 +99,7 @@ DMA_HandleTypeDef hdma_usart2_rx;
 
 ENC_HandleTypeDef hencoder1;
 DRIVER_HandleTypeDef hdriver1;
+VALVE_HandleTypeDef hvalve1;
 PANEL_HandleTypeDef hpanel1;
 
 #ifdef SERIAL_IO
@@ -118,6 +124,7 @@ static void MX_TIM17_Init(void);
 /* Private function prototypes -----------------------------------------------*/
 static void MX_ENCODER_Init(void);
 static void MX_DRIVER_Init(void);
+static void MX_VALVE_Init(void);
 static void MX_PANEL_Init(void);
 #ifdef SERIAL_IO
 static void MX_SIO_Init(void);
@@ -169,6 +176,7 @@ int main(void)
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
   MX_DRIVER_Init();
+  MX_VALVE_Init();
   MX_ENCODER_Init();
   MX_PANEL_Init();
 
@@ -184,11 +192,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+#ifdef IWDG_ENABLE
 	  if(!HAL_GPIO_ReadPin(DRV_ENABLE_GPIO_Port, DRV_ENABLE_Pin)){
 		  HAL_IWDG_Refresh(&hiwdg);
 	  }
-
+#endif
 
     /* USER CODE END WHILE */
 
@@ -308,6 +316,9 @@ static void MX_IWDG_Init(void)
 {
 
   /* USER CODE BEGIN IWDG_Init 0 */
+#ifndef IWDG_ENABLE
+	return;
+#endif
 
   /* USER CODE END IWDG_Init 0 */
 
@@ -739,15 +750,12 @@ static void MX_DRIVER_Init(void){
 	hdriver1.htim_pwm = &htim1;
 	hdriver1.pwm_ch = TIM_CHANNEL_3;
 	hdriver1.htim_pid = &htim7;
-	hdriver1.htim_valve = &htim17;
 	hdriver1.encoder = &hencoder1;
 	hdriver1.pid_inner.Kp = 0.1;
 	hdriver1.pid_inner.Ki = 0.001;
 	hdriver1.pid_outer.Kp = 0.08;
 	hdriver1.drv_enable_port = DRV_ENABLE_GPIO_Port;
 	hdriver1.drv_enable_pin = DRV_ENABLE_Pin;
-	hdriver1.act_valve_port = ACT_VALVE_GPIO_Port;
-	hdriver1.act_valve_pin = ACT_VALVE_Pin;
 	//hdriver1.pid.Ki = 1;
 
 	if(HAL_DRIVER_Init(&hdriver1) != HAL_OK) {
@@ -756,9 +764,22 @@ static void MX_DRIVER_Init(void){
 
 }
 
+static void MX_VALVE_Init(void){
+
+	hvalve1.htim_valve = &htim17;
+	hvalve1.act_valve_port = ACT_VALVE_GPIO_Port;
+	hvalve1.act_valve_pin = ACT_VALVE_Pin;
+
+	if(HAL_VALVE_Init(&hvalve1) != HAL_OK) {
+		Error_Handler();
+	}
+
+}
+
 static void MX_PANEL_Init(void)
 {
 	hpanel1.hdriver = &hdriver1;
+	hpanel1.hvalve = &hvalve1;
 	hpanel1.cupbus1.port = CUPBUS_1_GPIO_Port;
 	hpanel1.cupbus1.pin = CUPBUS_1_Pin;
 	hpanel1.cupbus2.port = CUPBUS_2_GPIO_Port;

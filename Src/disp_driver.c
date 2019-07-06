@@ -70,27 +70,6 @@ HAL_StatusTypeDef HAL_DRIVER_Dispense_coffee(DRIVER_HandleTypeDef *hdriver, uint
 	return HAL_DRIVER_Start_PID(hdriver, units * ENCODER_STEPS_PER_COMPARTMENT);
 }
 
-HAL_StatusTypeDef HAL_DRIVER_Dispense_water(DRIVER_HandleTypeDef *hdriver, uint32_t units){
-	if(units > MAX_WATER_UNITS){
-		units = MAX_WATER_UNITS;
-	}
-	if(hdriver->htim_valve->Instance->CR1 & 1){
-		uint16_t total_time = hdriver->htim_valve->Instance->ARR + (units * VALVE_TIME_PER_UNIT);
-		if(total_time > (VALVE_TIME_PER_UNIT * MAX_WATER_UNITS)){
-			hdriver->htim_valve->Instance->ARR = VALVE_TIME_PER_UNIT * MAX_WATER_UNITS;
-		} else {
-			hdriver->htim_valve->Instance->ARR += units * VALVE_TIME_PER_UNIT;
-		}
-		return HAL_OK;
-	} else {
-		hdriver->htim_valve->Instance->ARR = units * VALVE_TIME_PER_UNIT;
-	}
-
-	HAL_GPIO_WritePin(hdriver->act_valve_port, hdriver->act_valve_pin, GPIO_PIN_SET);
-	return HAL_TIM_Base_Start_IT(hdriver->htim_valve);
-
-}
-
 
 HAL_StatusTypeDef HAL_DRIVER_Update_PID(DRIVER_HandleTypeDef *hdriver){
 	if(hdriver->State == HAL_DRIVER_STATE_BUSY){

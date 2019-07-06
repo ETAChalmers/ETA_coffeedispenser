@@ -69,6 +69,7 @@
 /* USER CODE BEGIN 0 */
 
 #include "disp_driver.h"
+#include "valve_driver.h"
 #include "panel_io.h"
 #ifdef SERIAL_IO
 #include "serial_io.h"
@@ -77,6 +78,7 @@ extern SIO_HandleTypeDef hsio1;
 
 extern ENC_HandleTypeDef hencoder1;
 extern DRIVER_HandleTypeDef hdriver1;
+extern VALVE_HandleTypeDef hvalve1;
 extern PANEL_HandleTypeDef hpanel1;
 
 
@@ -255,7 +257,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 
 	if(htim == &htim17){
-		HAL_GPIO_WritePin(hdriver1.act_valve_port, hdriver1.act_valve_pin, GPIO_PIN_RESET);
+		HAL_VALVE_callback(&hvalve1);
 	}
 
 }

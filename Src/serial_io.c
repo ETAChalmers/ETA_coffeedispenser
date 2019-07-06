@@ -5,8 +5,8 @@
  *      Author: eta
  */
 
-#include "serial_io.h"
 #include "disp_driver.h"
+#include "serial_io.h"
 #include "stm32f3xx_hal_uart.h"
 
 HAL_StatusTypeDef HAL_SIO_Init(SIO_HandleTypeDef *hsio){

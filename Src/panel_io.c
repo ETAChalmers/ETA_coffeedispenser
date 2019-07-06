@@ -6,6 +6,8 @@
  */
 
 #include "panel_io.h"
+#include "disp_driver.h"
+#include "valve_driver.h"
 #include "stm32f3xx_hal.h"
 
 static uint32_t HAL_PANEL_Read_cupbus(PANEL_HandleTypeDef *hpanel);
@@ -29,9 +31,9 @@ void HAL_PANEL_BrewBTN_CB(PANEL_HandleTypeDef *hpanel) {
 		uint32_t compartments = COMPARTMENTS_COFFE_PER_CUP * cups;		//Compartment ~11g coffee
 		uint32_t water = CL_WATER_PER_CUP * cups;						//centilitres of water per cup
 		//Dispense the cups
-		if(HAL_DRIVER_Dispense_coffee(hpanel->hdriver, compartments) == HAL_OK){
-			HAL_DRIVER_Dispense_water(hpanel->hdriver, water);
-		}
+		HAL_VALVE_Dispense_water(hpanel->hvalve, water);
+		HAL_DRIVER_Dispense_coffee(hpanel->hdriver, compartments);
+
 		hpanel->State = HAL_PANEL_STATE_READY;
 		return;
 	}
