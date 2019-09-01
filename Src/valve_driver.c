@@ -52,13 +52,18 @@ HAL_StatusTypeDef HAL_VALVE_Dispense_water(VALVE_HandleTypeDef *hvalve, uint32_t
 
 void HAL_VALVE_callback(VALVE_HandleTypeDef *hvalve){
 	uint32_t units;
-	if(hvalve->valve_units_buffer){
+	uint32_t units_more;
+	if(hvalve->valve_units_buffer && (hvalve->valve_units_total < MAX_WATER_UNITS)){
 		units = hvalve->valve_units_total + hvalve->valve_units_buffer;
 		if(units > MAX_WATER_UNITS){
-			units = MAX_WATER_UNITS;
+			units_more = MAX_WATER_UNITS - hvalve->valve_units_total;
+			hvalve->valve_units_total = MAX_WATER_UNITS;
+		} else {
+			units_more = hvalve->valve_units_buffer;
+			hvalve->valve_units_total = units;
 		}
 		hvalve->valve_units_buffer = 0;
-		hvalve->valve_units_total = units;
+		hvalve->htim_valve->Instance->ARR = units_more * VALVE_TIME_PER_UNIT;
 		HAL_TIM_Base_Start_IT(hvalve->htim_valve);
 		return;
 	}
